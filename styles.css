@@ -1,0 +1,38 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f7f7f7;
+  padding: 20px;
+}
+
+.game-card {
+  background: #f2f4ff;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+}
+
+.bookmaker {
+  margin-top: 6px;
+}
+
+.odds-legend {
+  background: #f4f4f4;
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 8px;
+  line-height: 1.5;
+}
+
+.insight {
+  margin: 12px 0;
+  padding: 12px;
+
+  background: #b4b9b9;
+
+  border-left: 4px solid #4ae263;
+
+  border-radius: 8px;
+
+  color: #1f2937;
+}
