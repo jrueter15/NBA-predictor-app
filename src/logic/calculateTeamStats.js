@@ -4,27 +4,32 @@ export function calculateTeamStats(games, teamId) {
   let awayFor = 0;
   let awayAgainst = 0;
 
-  let homeGames = 0;
-  let awayGames = 0;
+  let homeWeight = 0;
+  let awayWeight = 0;
 
-  games.forEach(game => {
+  const decay = 0.08 // how fast old games lose value
+
+  games.forEach(game, index => {
     const isHome = game.home_team.id === teamId;
 
+    const weight = 1 - index * decay;
+
     if (isHome) {
-      homeFor += game.home_team_score;
-      homeAgainst += game.away_team_score;
-      homeGames++;
+      homeFor += game.home_team_score * weight;
+      homeAgainst += game.away_team_score * weight;
+      homeWeight += weight;
     } else {
       awayFor += game.away_team_score;
       awayAgainst += game.home_team_score;
-      awayGames++;
+      awayWeight += weight;
     }
   });
 
   return {
-    homeAvgPointsFor: homeGames ? homeFor / homeGames : 0,
-    homeAvgPointsAgainst: homeGames ? homeAgainst / homeGames : 0,
-    awayAvgPointsFor: awayGames ? awayFor / awayGames : 0,
-    awayAvgPointsAgainst: awayGames ? awayAgainst / awayGames : 0
+    homeAvgPointsFor: homeGames ? homeFor / homeWeight : 0,
+    homeAvgPointsAgainst: homeGames ? homeAgainst / homeWeight : 0,
+    
+    awayAvgPointsFor: awayGames ? awayFor / awayWeight : 0,
+    awayAvgPointsAgainst: awayGames ? awayAgainst / awayWeight : 0
   };
 }
