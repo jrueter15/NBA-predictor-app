@@ -9,5 +9,12 @@ export async function getLast10Games(teamId) {
   );
 
   const data = await response.json();
-  return data.data;
+
+    return sortByDate(data.data).slice(0, 10);
+}
+
+function sortByDate(games) {
+  return [...games].sort(
+    (a, b) => new Date(b.commence_time) - new Date(a.commence_time)
+  );
 }
