@@ -1,122 +1,265 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+console.log("App started");
 
-function App() {
-  const [count, setCount] = useState(0)
+import {generateTotalInsight} from "./logic/insights.js";
+import {getTeamGames} from "./api/statsApi.js";
+import {calculateAveragePoints} from "./logic/averages.js";
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+const fakeGame = {
+  homeAvgPoints: 115,
+  awayAvgPoints: 112,
+  total: 221.5
+};
 
-      <div className="ticks"></div>
+const insight = generateTotalInsight(fakeGame);
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+console.log(insight);
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+// should use clearsports api - not working rn
+
+let gamesDiv;
+let datePicker;
+
+let lastFetchTime = 0;
+const COOLDOWN = 2000; // 2 seconds
+let isLoading = false;
+
+document.addEventListener("DOMContentLoaded", () => {
+  gamesDiv = document.getElementById("games");
+  datePicker = document.getElementById("datePicker");
+  const loadBtn = document.getElementById("loadBtn");
+
+  // Set default date to today
+  const today = new Date();
+  const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+
+  datePicker.value = localDate;
+
+  datePicker.addEventListener("change", loadData);
+
+  loadBtn.addEventListener("click",loadData);
+});
+
+async function loadData() {
+  const now = Date.now();
+
+  if (now - lastFetchTime < COOLDOWN) {
+    console.log("Skipping request (cooldown)");
+    return;
+  }
+
+  // Prevents spam
+  if (isLoading) return;
+
+  isLoading = true;
+  lastFetchTime = now;
+    
+  gamesDiv.innerHTML = "<p>Loading games...</p>";
+
+  try {
+    const oddsData = await fetchOdds();
+
+    console.log("Odds loaded: ", oddsData);
+
+    const filteredGames = filterGamesByDate(
+      oddsData,
+      datePicker.value
+    );
+
+    renderGames(filteredGames);
+
+  } catch (e) {
+    console.error("Odds failed:", e);
+
+    gamesDiv.innerHTML = `
+    <p>Failed to load games.</p>
+    `;
+  }
+
+  isLoading = false;
 }
 
-export default App
+// Fetch odds
+async function fetchOdds() {
+  const response = await fetch(
+    "https://api.the-odds-api.com/v4/sports/basketball_nba/odds?regions=us&markets=spreads,totals,h2h&apiKey=43df2322173d88a1be8f6588fd399c7a"
+  );
+
+  console.log("Odds status:", response.status);
+
+  const text = await response.text();
+  console.log("Raw odds response:", text);
+
+  if (!response.ok) {
+    throw new Error(`Odds fetch failed: ${response.status}`);
+  }
+
+  return JSON.parse(text);
+}
+
+function getMarket(bookmaker, key) {
+  return bookmaker.markets.find(
+    market => market.key === key
+  );
+}
+
+// Extract spread
+function getMarketData(oddsGame) {
+  if (!oddsGame || !oddsGame.bookmakers) return [];
+
+  return oddsGame.bookmakers.map(book => {
+    const spreadsMarket = getMarket(book, "spreads");
+    const totalsMarket = getMarket(book, "totals");
+    const moneylineMarket = getMarket(book, "h2h");
+
+    // Spread
+    const homeSpread = spreadsMarket?.outcomes.find(
+      o => o.name === oddsGame.home_team
+    );
+
+    // Totals
+    const over = totalsMarket?.outcomes.find(
+      o => o.name === "Over"
+    );
+
+    const under = totalsMarket?.outcomes.find(
+      o => o.name === "Under"
+    );
+
+    // Moneylines
+    const homeML = moneylineMarket?.outcomes.find(
+      o => o.name === oddsGame.home_team
+    );
+
+    const awayML = moneylineMarket?.outcomes.find(
+      o => o.name === oddsGame.away_team
+    );
+
+    return{
+      book: book.title,
+
+      spread: homeSpread?.point,
+      spreadPrice: homeSpread?.price,
+
+      total: over?.point,
+      overPrice: over?.price,
+      underPrice: under?.price,
+
+      homeML: homeML?.price,
+      awayML: awayML?.price
+    }
+  })
+}
+
+// Helper for data filtering
+function filterGamesByDate(games, selectedDate){
+  return games.filter(game => {
+    const gameDate = new Date(game.commence_time);
+    
+    const localDate = new Date(gameDate.getTime() - gameDate.getTimezoneOffset() * 60000
+  ).toISOString().split("T")[0];
+    
+  return localDate === selectedDate;
+  })
+}
+
+// Render UI
+function renderGames(games) {
+  gamesDiv.innerHTML = "";
+
+  if (!games || games.length === 0) {
+    gamesDiv.innerHTML = "<p>No games found.</p>";
+    return;
+  }
+
+  games.forEach(game => {
+    
+    const odds = getMarketData(game);
+
+    const firstBook = odds[0];
+
+    const insight = generateTotalInsight({
+      homeAvgPoints: 115,
+      awayAvgPoints: 112,
+      total: firstBook?.total || 0
+    });
+
+    const gameEl = document.createElement("div");
+
+    gameEl.className = "game-card";
+
+    const oddsHtml = odds.map(o => `
+      <div class="bookmaker">
+        <strong>${o.book}: </strong><br>
+
+        Spread:
+        ${o.spread ?? "N/A"}
+        (${o.spreadPrice ?? "N/A"})<br>
+
+        Total:
+        ${o.total ?? "N/A"}
+        (O ${o.overPrice ?? "N/A"} /
+        U ${o.underPrice ?? "N/A"})<br>
+
+        ML:
+        Home ${o.homeML ?? "N/A"} /
+        Away ${o.awayML ?? "N/A"}
+
+      </div>
+    `).join("");
+
+    gameEl.innerHTML = `
+      <strong>${game.away_team}</strong> @
+      <strong>${game.home_team}</strong> 
+
+      <div class="insight">
+        <p>
+          Projected Total:
+          ${insight.projectedTotal}
+        </p>
+
+        <p>
+          Lean:
+          ${insight.lean}
+        </p>
+      </div>
+
+      <div>${oddsHtml}</div>
+    `;
+
+    gamesDiv.appendChild(gameEl);
+  });
+}
+
+async function getActiveSports() {
+  const response = await fetch("https://api.the-odds-api.com/v4/sports?apiKey=43df2322173d88a1be8f6588fd399c7a");
+  const data = await response.json();
+
+  // Filter only in-season sports
+  const activeSports = data.filter(sport => sport.active);
+
+  console.log(activeSports);
+  return activeSports;
+
+  const formattedSports = activeSports.map(sport => ({
+  key: sport.key,
+  title: sport.title
+  }));
+
+  console.log(formattedSports);
+}
+
+async function testStats() {
+
+  const games =
+    await getTeamGames(2);
+
+  const avg =
+    calculateAveragePoints(
+      games,
+      "Boston Celtics"
+    );
+
+  console.log(avg);
+}
+
+testStats();
