@@ -9,7 +9,7 @@ export function calculateTeamStats(games, teamId) {
 
   const decay = 0.08 // how fast old games lose value
 
-  games.forEach(game, index => {
+  games.forEach((game, index) => {
     const isHome = game.home_team.id === teamId;
 
     const weight = 1 - index * decay;
@@ -19,17 +19,17 @@ export function calculateTeamStats(games, teamId) {
       homeAgainst += game.away_team_score * weight;
       homeWeight += weight;
     } else {
-      awayFor += game.away_team_score;
-      awayAgainst += game.home_team_score;
+      awayFor += game.away_team_score * weight;
+      awayAgainst += game.home_team_score * weight;
       awayWeight += weight;
     }
   });
 
   return {
-    homeAvgPointsFor: homeGames ? homeFor / homeWeight : 0,
-    homeAvgPointsAgainst: homeGames ? homeAgainst / homeWeight : 0,
+    homeAvgPointsFor: homeWeight ? homeFor / homeWeight : 0,
+    homeAvgPointsAgainst: homeWeight ? homeAgainst / homeWeight : 0,
     
-    awayAvgPointsFor: awayGames ? awayFor / awayWeight : 0,
-    awayAvgPointsAgainst: awayGames ? awayAgainst / awayWeight : 0
+    awayAvgPointsFor: awayWeight ? awayFor / awayWeight : 0,
+    awayAvgPointsAgainst: awayWeight ? awayAgainst / awayWeight : 0
   };
 }
