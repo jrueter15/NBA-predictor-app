@@ -1,8 +1,36 @@
-console.log("App started");
-
+import { useEffect, useState } from "react";
 import {generateTotalInsight} from "./logic/insights.js";
 import {getTeamGames} from "./api/statsApi.js";
 import {calculateAveragePoints} from "./logic/averages.js";
+
+function App(){
+
+console.log("App started");
+
+const [games, setGames] = useState([]);
+
+useEffect(() => {
+  loadData();
+}, []);
+
+async function loadData(){
+  console.log("loading games...");
+}
+
+return(
+  <div>
+    <h1>NBA Predictor</h1>
+
+    {games.map(game => (
+      <div key={game.id}>
+        {game.away_team} @ {game.home_team}
+      </div>
+    ))}
+  </div>
+);
+}
+
+export default App;
 
 const fakeGame = {
   homeAvgPoints: 115,
@@ -263,3 +291,5 @@ async function testStats() {
 }
 
 testStats();
+
+}
