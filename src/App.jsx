@@ -43,27 +43,6 @@ const insight = generateTotalInsight(fakeGame);
 
 console.log(insight);
 
-async function loadData() {
-  const now = Date.now();
-
-  lastFetchTime = now;
-
-  try {
-    const oddsData = await fetchOdds();
-
-    console.log("Odds loaded: ", oddsData);
-
-    const filteredGames = filterGamesByDate(
-      oddsData
-    );
-
-  } catch (e) {
-    console.error("Odds failed:", e);
-
-  }
-
-}
-
 // Fetch odds
 async function fetchOdds() {
   const response = await fetch(
