@@ -46,15 +46,6 @@ console.log(insight);
 async function loadData() {
   const now = Date.now();
 
-  if (now - lastFetchTime < COOLDOWN) {
-    console.log("Skipping request (cooldown)");
-    return;
-  }
-
-  // Prevents spam
-  if (isLoading) return;
-
-  isLoading = true;
   lastFetchTime = now;
 
   try {
@@ -63,18 +54,14 @@ async function loadData() {
     console.log("Odds loaded: ", oddsData);
 
     const filteredGames = filterGamesByDate(
-      oddsData,
-      datePicker.value
+      oddsData
     );
-
-    renderGames(filteredGames);
 
   } catch (e) {
     console.error("Odds failed:", e);
 
   }
 
-  isLoading = false;
 }
 
 // Fetch odds
