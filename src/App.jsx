@@ -5,29 +5,30 @@ import {calculateAveragePoints} from "./logic/averages.js";
 
 function App(){
 
-console.log("App started");
+  console.log("App started");
 
-const [games, setGames] = useState([]);
+  const [games, setGames] = useState([]);
 
-useEffect(() => {
-  loadData();
-}, []);
+  useEffect(() => {
+    loadData();
+  }, []);
 
-async function loadData(){
-  console.log("loading games...");
-}
+  async function loadData(){
+    console.log("loading games...");
+  }
 
-return(
-  <div>
-    <h1>NBA Predictor</h1>
+  return(
+    <div>
+      <h1>NBA Predictor</h1>
 
-    {games.map(game => (
-      <div key={game.id}>
-        {game.away_team} @ {game.home_team}
-      </div>
-    ))}
-  </div>
-);
+      {games.map(game => (
+        <div key={game.id}>
+          {game.away_team} @ {game.home_team}
+        </div>
+      ))}
+      
+    </div>
+  );
 }
 
 export default App;
@@ -42,31 +43,6 @@ const insight = generateTotalInsight(fakeGame);
 
 console.log(insight);
 
-// should use clearsports api - not working rn
-
-let gamesDiv;
-let datePicker;
-
-let lastFetchTime = 0;
-const COOLDOWN = 2000; // 2 seconds
-let isLoading = false;
-
-document.addEventListener("DOMContentLoaded", () => {
-  gamesDiv = document.getElementById("games");
-  datePicker = document.getElementById("datePicker");
-  const loadBtn = document.getElementById("loadBtn");
-
-  // Set default date to today
-  const today = new Date();
-  const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0];
-
-  datePicker.value = localDate;
-
-  datePicker.addEventListener("change", loadData);
-
-  loadBtn.addEventListener("click",loadData);
-});
-
 async function loadData() {
   const now = Date.now();
 
@@ -80,8 +56,6 @@ async function loadData() {
 
   isLoading = true;
   lastFetchTime = now;
-    
-  gamesDiv.innerHTML = "<p>Loading games...</p>";
 
   try {
     const oddsData = await fetchOdds();
@@ -98,9 +72,6 @@ async function loadData() {
   } catch (e) {
     console.error("Odds failed:", e);
 
-    gamesDiv.innerHTML = `
-    <p>Failed to load games.</p>
-    `;
   }
 
   isLoading = false;
@@ -190,74 +161,6 @@ function filterGamesByDate(games, selectedDate){
   })
 }
 
-// Render UI
-function renderGames(games) {
-  gamesDiv.innerHTML = "";
-
-  if (!games || games.length === 0) {
-    gamesDiv.innerHTML = "<p>No games found.</p>";
-    return;
-  }
-
-  games.forEach(game => {
-    
-    const odds = getMarketData(game);
-
-    const firstBook = odds[0];
-
-    const insight = generateTotalInsight({
-      homeAvgPoints: 115,
-      awayAvgPoints: 112,
-      total: firstBook?.total || 0
-    });
-
-    const gameEl = document.createElement("div");
-
-    gameEl.className = "game-card";
-
-    const oddsHtml = odds.map(o => `
-      <div class="bookmaker">
-        <strong>${o.book}: </strong><br>
-
-        Spread:
-        ${o.spread ?? "N/A"}
-        (${o.spreadPrice ?? "N/A"})<br>
-
-        Total:
-        ${o.total ?? "N/A"}
-        (O ${o.overPrice ?? "N/A"} /
-        U ${o.underPrice ?? "N/A"})<br>
-
-        ML:
-        Home ${o.homeML ?? "N/A"} /
-        Away ${o.awayML ?? "N/A"}
-
-      </div>
-    `).join("");
-
-    gameEl.innerHTML = `
-      <strong>${game.away_team}</strong> @
-      <strong>${game.home_team}</strong> 
-
-      <div class="insight">
-        <p>
-          Projected Total:
-          ${insight.projectedTotal}
-        </p>
-
-        <p>
-          Lean:
-          ${insight.lean}
-        </p>
-      </div>
-
-      <div>${oddsHtml}</div>
-    `;
-
-    gamesDiv.appendChild(gameEl);
-  });
-}
-
 async function getActiveSports() {
   const response = await fetch("https://api.the-odds-api.com/v4/sports?apiKey=43df2322173d88a1be8f6588fd399c7a");
   const data = await response.json();
@@ -291,5 +194,3 @@ async function testStats() {
 }
 
 testStats();
-
-}
