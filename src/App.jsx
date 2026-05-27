@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import {generateTotalInsight} from "./logic/insights.js";
-import {getTeamGames} from "./api/statsApi.js";
-import {calculateAveragePoints} from "./logic/averages.js";
+import "./App.css";
+//import {generateTotalInsight} from "./logic/insights.js";
+//import {getTeamGames} from "./api/statsApi.js";
+//import {calculateAveragePoints} from "./logic/averages.js";
 
 function App(){
 
@@ -14,14 +15,151 @@ function App(){
   }, []);
 
   async function loadData(){
-    console.log("loading games...");
+    try{
+      const oddsData = await fetchOdds();
+
+      console.log("Odds loaded:", oddsData);
+
+      setGames(oddsData);
+
+    }catch(err){
+      console.error("Failed to load odds: ", err);
+    }
   }
 
   return(
-    <div>
+    <div className="app">
+
       <h1>NBA Predictor</h1>
 
-      {games.map(game => (
+      {games.length === 0 ? (
+
+        <p>Loading games...</p>
+
+      ) : (
+        
+        games.map(game => {
+
+          const firstBook = game.bookmakers?.[0];
+
+          const totalsMarket = firstBook?.markets?.find(
+            market => market.key === "totals"
+          );
+          
+          const spreadsMarket = firstBook?.markets?.find(
+            market => market.key === "spreads"
+          );
+
+          const h2hMarket = firstBook?.markets?.find(
+            market => market.key === "h2h"
+          );
+
+          const over =
+            totalsMarket?.outcomes?.find(
+              outcome => outcome.name === "Over"
+            );
+
+          const under =
+            totalsMarket?.outcomes?.find(
+              outcome => outcome.name === "Under"
+            );
+
+          const homeSpread =
+            spreadsMarket?.outcomes?.find(
+              outcome => outcome.name === game.home_team
+            );
+
+          const homeML =
+            h2hMarket?.outcomes?.find(
+              outcome => outcome.name === game.home_team
+            );
+
+          const awayML =
+            h2hMarket?.outcomes?.find(
+              outcome => outcome.name === game.away_team
+            );
+
+          return (
+
+            <div key={game.id} className="game-card">
+
+              <h2>
+                {game.away_team} @ {game.home_team}
+              </h2>
+
+              <p>
+                <strong>Total:</strong>{" "}
+                {over?.point ?? "N/A"}
+              </p>
+
+              <p>
+                <strong>Spread:</strong>{" "}
+                {homeSpread?.point ?? "N/A"}
+              </p>
+
+              <p>
+                <strong>Moneyline:</strong>
+              </p>
+
+              <p>
+                {game.home_team}:{" "}
+                {homeML?.price ?? "N/A"}
+              </p>
+
+              <p>
+                {game.away_team}:{" "}
+                {awayML?.price ?? "N/A"}
+              </p>
+
+              <hr />
+
+            </div>
+          );
+        })
+      )}
+    </div>
+  );
+}
+
+export default App;
+
+// Fetch odds
+async function fetchOdds() {
+
+  const response = await fetch(
+    `https://api.the-odds-api.com/v4/sports/basketball_nba/odds?regions=us&markets=spreads,totals,h2h&apiKey=${import.meta.env.VITE_ODDS_API_KEY}`
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Odds fetch failed: ${response.status}`
+    );
+  }
+
+  return response.json();
+}
+
+{/*
+
+        })
+      )}
+
+      {games.map(game => {
+
+
+
+
+
+        const over = totalsMarket?.outcomes?.find(
+          outcome => outcome.name === "Over"
+        );
+
+        return(
+          
+          
+          Sportsbook Total: {over?.point ?? "N/A"}
+        )
+
         <div key={game.id}>
           {game.away_team} @ {game.home_team}
         </div>
@@ -29,6 +167,7 @@ function App(){
       
     </div>
   );
+}
 }
 
 export default App;
@@ -145,6 +284,7 @@ async function getActiveSports() {
   console.log(formattedSports);
 }
 
+
 async function testStats() {
 
   const games =
@@ -158,5 +298,4 @@ async function testStats() {
 
   console.log(avg);
 }
-
-testStats();
+*/}
