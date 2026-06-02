@@ -14,6 +14,11 @@ export default function App(){
 
   function loadGames(){
     console.log("Load Games clicked");
+
+    setGames([
+      {id: 1, name: "Lakers vs Celtics"},
+      {id: 2, name: "Bulls vs Heat"}
+    ]);
   }
 
   return(
@@ -24,6 +29,11 @@ export default function App(){
       <input type="date"/>
 
       <button onClick={loadGames}>Load Games</button>
+      {games.map(game => (
+        <div key={game.id}>
+          {game.name}
+        </div>
+      ))}
     </div>
   );
 }
