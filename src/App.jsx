@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 export default function App(){
+  alert("Hello");
 
   const [message, setMessage] = useState("Loading...");
 
@@ -13,6 +14,7 @@ export default function App(){
     <div>
       <h1>NBA Predictor</h1>
       <p>{message}</p>
+      <h1>HELLO JARED</h1>
     </div>
   );
 }
