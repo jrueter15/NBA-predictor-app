@@ -1,20 +1,29 @@
 import { useEffect, useState } from "react";
 
 export default function App(){
+  // component - JS function that return UI (jsx)
+  // state, functions, logic
+
   const [message, setMessage] = useState("Loading...");
+  const [games, setGames] = useState([]);
 
   useEffect(() => {
     console.log("App mounted");
     setMessage("React is working!");
   }, []);
 
+  function loadGames(){
+    console.log("Load Games clicked");
+  }
+
   return(
+    // Return statement is the UI
     <div>
       <h1>NBA Predictor</h1>
 
       <input type="date"/>
 
-      <button>Load Games</button>
+      <button onClick={loadGames}>Load Games</button>
     </div>
   );
 }
