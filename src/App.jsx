@@ -1,10 +1,35 @@
 import { useEffect, useState } from "react";
-import "./App.css";
+
+export default function App(){
+
+  const [message, setMessage] = useState("Loading...");
+
+  useEffect(() => {
+    console.log("App mounted");
+    setMessage("React is working!");
+  }, []);
+
+  return(
+    <div>
+      <h1>NBA Predictor</h1>
+      <p>{message}</p>
+    </div>
+  );
+}
+
+
+//import "./App.css";
 //import {generateTotalInsight} from "./logic/insights.js";
 //import {getTeamGames} from "./api/statsApi.js";
 //import {calculateAveragePoints} from "./logic/averages.js";
 
+
+{/*
+
 function App(){
+  alert("App started");
+
+  const[games, setGames] = useState([]);
 
   console.log("App started");
 
@@ -15,6 +40,7 @@ function App(){
   }, []);
 
   async function loadData(){
+    console.log("Load button clicked");
     try{
       const oddsData = await fetchOdds();
 
@@ -125,6 +151,8 @@ export default App;
 
 // Fetch odds
 async function fetchOdds() {
+  console.log("Fetching odds...");
+  console.log("Response:", response.status);
 
   const response = await fetch(
     `https://api.the-odds-api.com/v4/sports/basketball_nba/odds?regions=us&markets=spreads,totals,h2h&apiKey=${import.meta.env.VITE_ODDS_API_KEY}`
@@ -139,7 +167,6 @@ async function fetchOdds() {
   return response.json();
 }
 
-{/*
 
         })
       )}
