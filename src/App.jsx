@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 
 export default function App(){
-  alert("Hello");
-
   const [message, setMessage] = useState("Loading...");
 
   useEffect(() => {
@@ -13,8 +11,10 @@ export default function App(){
   return(
     <div>
       <h1>NBA Predictor</h1>
-      <p>{message}</p>
-      <h1>HELLO JARED</h1>
+
+      <input type="date"/>
+
+      <button>Load Games</button>
     </div>
   );
 }
