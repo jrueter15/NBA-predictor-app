@@ -36,7 +36,7 @@ export default function App(){
       <button onClick={loadGames}>Load Games</button>
       {games.map(game => (
         <div key={game.id}>
-          {game.name}
+          {game.away_team} @ {game.home_team}
         </div>
       ))}
     </div>
