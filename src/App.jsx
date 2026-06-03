@@ -46,7 +46,7 @@ export default function App(){
 // Helper fetchOdds function
 async function fetchOdds(){
   const response = await fetch(
-    `https://api.the-odds-api.com/v4/sports/basketball_nba/odds?regions=us&markets=spreads,totals,h2h&apiKey=${import.meta.env.VITE_BALLDONTLIE_KEY}`
+    `https://api.the-odds-api.com/v4/sports/basketball_nba/odds?regions=us&markets=spreads,totals,h2h&apiKey=${import.meta.env.VITE_ODDS_API_KEY}`
   );
 
   if(!response.ok){
