@@ -15,10 +15,15 @@ export default function App(){
   function loadGames(){
     console.log("Load Games clicked");
 
-    setGames([
-      {id: 1, name: "Lakers vs Celtics"},
-      {id: 2, name: "Bulls vs Heat"}
-    ]);
+    try{
+      const data = await fetchOdds();
+
+      console.log(data);
+
+      setGames(data);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return(
