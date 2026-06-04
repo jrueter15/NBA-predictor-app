@@ -18,6 +18,8 @@ export default function App(){
     try{
       const data = await fetchOdds();
 
+      console.log(data[0]);
+
       console.log(data);
 
       setGames(data);
@@ -34,11 +36,55 @@ export default function App(){
       <input type="date"/>
 
       <button onClick={loadGames}>Load Games</button>
-      {games.map(game => (
-        <div key={game.id}>
-          {game.away_team} @ {game.home_team}
-        </div>
-      ))}
+        {games.map(game => {
+          const firstBook = game.bookmakers?.[0];
+
+          const totalsMarket = firstBook?.markets?.find(
+            market => market.key === "totals"
+          );
+          
+          const spreadsMarket = firstBook?.markets?.find(
+            market => market.key === "spreads"
+          );
+
+          const h2hMarket = firstBook?.markets?.find(
+            market => market.key === "h2h"
+          );
+
+          const over =
+            totalsMarket?.outcomes?.find(
+              outcome => outcome.name === "Over"
+            );
+
+          const under =
+            totalsMarket?.outcomes?.find(
+              outcome => outcome.name === "Under"
+            );
+
+          const homeSpread =
+            spreadsMarket?.outcomes?.find(
+              outcome => outcome.name === game.home_team
+            );
+
+          const homeML =
+            h2hMarket?.outcomes?.find(
+              outcome => outcome.name === game.home_team
+            );
+
+          const awayML =
+            h2hMarket?.outcomes?.find(
+              outcome => outcome.name === game.away_team
+            );
+
+        return(
+          <div key={game.id}>
+            <h3>{game.away_team} @ {game.home_team}</h3>
+
+          </div>
+        )
+
+
+        })}
     </div>
   );
 }
