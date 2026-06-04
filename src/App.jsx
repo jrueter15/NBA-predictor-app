@@ -36,8 +36,7 @@ export default function App(){
       <input type="date"/>
 
       <button onClick={loadGames}>Load Games</button>
-        {games.map(game => {
-          const firstBook = game.bookmakers?.[0];
+        {game.bookmakers?.map(book => {
 
           const totalsMarket = firstBook?.markets?.find(
             market => market.key === "totals"
@@ -77,32 +76,41 @@ export default function App(){
             );
 
         return(
-          <div key={game.id}>
-            <h3>{game.away_team} @ {game.home_team}</h3>
+          <div key={book.key}>
+            <strong>{book.title}</strong>
+
+            <h3>
+              {game.away_team} @ {game.home_team}
+            </h3>
+
+            <p>Total: {over?.point ?? "N/A"}</p>
+
+            <p>Spread: {homeSpread?.point ?? "N/A"}</p>
 
             <p>
-              <strong>Total:</strong>{" "}
-              {over?.point ?? "N/A"}
+              {game.home_team}: {homeML?.price ?? "N/A"}
             </p>
 
             <p>
-              <strong>Spread:</strong>{" "}
-              {homeSpread?.point ?? "N/A"}
-            </p>
+              {game.away_team}: {awayML?.price ?? "N/A"}
+            </p>            
 
-            <p>
-              <strong>Moneyline:</strong>
-            </p>
+            {game.bookmakers?.map(book => {
+              const totalsMarket = book.markets?.find(
+                market => market.key === "totals"
+              );
 
-            <p>
-              {game.home_team}:{" "}
-              {homeML?.price ?? "N/A"}
-            </p>
+              const over = totalsMarket?.outcomes?.find(
+                outcome => outcome.name === "Over"
+              );
 
-            <p>
-              {game.away_team}:{" "}
-              {awayML?.price ?? "N/A"}
-            </p>
+              return(
+                <div key={book.key}>
+                  <strong>{book.title}</strong>
+                  <p>Total: {over?.point ?? "N/A"}</p>
+                </div>
+              );
+            })}
           </div>
         )
       })}
@@ -169,47 +177,7 @@ function App(){
         <p>Loading games...</p>
 
       ) : (
-        
-        games.map(game => {
 
-          const firstBook = game.bookmakers?.[0];
-
-          const totalsMarket = firstBook?.markets?.find(
-            market => market.key === "totals"
-          );
-          
-          const spreadsMarket = firstBook?.markets?.find(
-            market => market.key === "spreads"
-          );
-
-          const h2hMarket = firstBook?.markets?.find(
-            market => market.key === "h2h"
-          );
-
-          const over =
-            totalsMarket?.outcomes?.find(
-              outcome => outcome.name === "Over"
-            );
-
-          const under =
-            totalsMarket?.outcomes?.find(
-              outcome => outcome.name === "Under"
-            );
-
-          const homeSpread =
-            spreadsMarket?.outcomes?.find(
-              outcome => outcome.name === game.home_team
-            );
-
-          const homeML =
-            h2hMarket?.outcomes?.find(
-              outcome => outcome.name === game.home_team
-            );
-
-          const awayML =
-            h2hMarket?.outcomes?.find(
-              outcome => outcome.name === game.away_team
-            );
 
           return (
 
