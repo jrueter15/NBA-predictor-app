@@ -28,94 +28,69 @@ export default function App(){
     }
   }
 
-  return(
-    // Return statement is the UI
-    <div>
-      <h1>NBA Predictor</h1>
+return (
+  <div>
+    <h1>NBA Predictor</h1>
 
-      <input type="date"/>
+    <input type="date" />
+    <button onClick={loadGames}>Load Games</button>
 
-      <button onClick={loadGames}>Load Games</button>
+    {games.map(game => (
+      <div key={game.id}>
+        <h2>
+          {game.away_team} @ {game.home_team}
+        </h2>
+
         {game.bookmakers?.map(book => {
-
-          const totalsMarket = firstBook?.markets?.find(
+          const totalsMarket = book.markets?.find(
             market => market.key === "totals"
           );
-          
-          const spreadsMarket = firstBook?.markets?.find(
+
+          const spreadsMarket = book.markets?.find(
             market => market.key === "spreads"
           );
 
-          const h2hMarket = firstBook?.markets?.find(
+          const h2hMarket = book.markets?.find(
             market => market.key === "h2h"
           );
 
-          const over =
-            totalsMarket?.outcomes?.find(
-              outcome => outcome.name === "Over"
-            );
+          const over = totalsMarket?.outcomes?.find(
+            outcome => outcome.name === "Over"
+          );
 
-          const under =
-            totalsMarket?.outcomes?.find(
-              outcome => outcome.name === "Under"
-            );
+          const homeSpread = spreadsMarket?.outcomes?.find(
+            outcome => outcome.name === game.home_team
+          );
 
-          const homeSpread =
-            spreadsMarket?.outcomes?.find(
-              outcome => outcome.name === game.home_team
-            );
+          const homeML = h2hMarket?.outcomes?.find(
+            outcome => outcome.name === game.home_team
+          );
 
-          const homeML =
-            h2hMarket?.outcomes?.find(
-              outcome => outcome.name === game.home_team
-            );
+          const awayML = h2hMarket?.outcomes?.find(
+            outcome => outcome.name === game.away_team
+          );
 
-          const awayML =
-            h2hMarket?.outcomes?.find(
-              outcome => outcome.name === game.away_team
-            );
+          return (
+            <div key={book.key} style={{ marginBottom: "16px" }}>
+              <strong>{book.title}</strong>
 
-        return(
-          <div key={book.key}>
-            <strong>{book.title}</strong>
+              <p>Total: {over?.point ?? "N/A"}</p>
+              <p>Spread: {homeSpread?.point ?? "N/A"}</p>
 
-            <h3>
-              {game.away_team} @ {game.home_team}
-            </h3>
+              <p>
+                {game.home_team}: {homeML?.price ?? "N/A"}
+              </p>
 
-            <p>Total: {over?.point ?? "N/A"}</p>
-
-            <p>Spread: {homeSpread?.point ?? "N/A"}</p>
-
-            <p>
-              {game.home_team}: {homeML?.price ?? "N/A"}
-            </p>
-
-            <p>
-              {game.away_team}: {awayML?.price ?? "N/A"}
-            </p>            
-
-            {game.bookmakers?.map(book => {
-              const totalsMarket = book.markets?.find(
-                market => market.key === "totals"
-              );
-
-              const over = totalsMarket?.outcomes?.find(
-                outcome => outcome.name === "Over"
-              );
-
-              return(
-                <div key={book.key}>
-                  <strong>{book.title}</strong>
-                  <p>Total: {over?.point ?? "N/A"}</p>
-                </div>
-              );
-            })}
-          </div>
-        )
-      })}
-    </div>
-  );
+              <p>
+                {game.away_team}: {awayML?.price ?? "N/A"}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    ))}
+  </div>
+);
 }
 
 // Helper fetchOdds function
