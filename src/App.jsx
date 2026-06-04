@@ -80,11 +80,32 @@ export default function App(){
           <div key={game.id}>
             <h3>{game.away_team} @ {game.home_team}</h3>
 
+            <p>
+              <strong>Total:</strong>{" "}
+              {over?.point ?? "N/A"}
+            </p>
+
+            <p>
+              <strong>Spread:</strong>{" "}
+              {homeSpread?.point ?? "N/A"}
+            </p>
+
+            <p>
+              <strong>Moneyline:</strong>
+            </p>
+
+            <p>
+              {game.home_team}:{" "}
+              {homeML?.price ?? "N/A"}
+            </p>
+
+            <p>
+              {game.away_team}:{" "}
+              {awayML?.price ?? "N/A"}
+            </p>
           </div>
         )
-
-
-        })}
+      })}
     </div>
   );
 }
