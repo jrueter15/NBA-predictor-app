@@ -54,21 +54,11 @@ return (
             market => market.key === "h2h"
           );
 
-          const over = totalsMarket?.outcomes?.find(
-            outcome => outcome.name === "Over"
-          );
+          const totalOutcomes = totalsMarket?.outcomes ?? [];
 
-          const homeSpread = spreadsMarket?.outcomes?.find(
-            outcome => outcome.name === game.home_team
-          );
+          const spreadOutcomes = spreadsMarket?.outcomes ?? [];
 
-          const homeML = h2hMarket?.outcomes?.find(
-            outcome => outcome.name === game.home_team
-          );
-
-          const awayML = h2hMarket?.outcomes?.find(
-            outcome => outcome.name === game.away_team
-          );
+          const moneylineOutcomes = h2hMarket?.outcomes ?? [];
 
           return (
             <div key={book.key} style={{ marginBottom: "16px" }}>
