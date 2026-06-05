@@ -64,12 +64,25 @@ return (
             <div key={book.key} style={{ marginBottom: "16px" }}>
               <strong>{book.title}</strong>
 
-              <p><strong>Spreads</strong></p>
               {spreadOutcomes.map(outcome => (
                 <p key={outcome.name}>
                   {outcome.name}: {outcome.point} ({outcome.price})
                 </p>
               ))}
+
+              {totalOutcomes.map(outcome => (
+                <p key={outcome.name}>
+                  {outcome.name}: {outcome.point} ({outcome.price})
+                </p>
+              ))}
+
+              {moneylineOutcomes.map(outcome => (
+                <p key={outcome.name}>
+                  {outcome.name}: {outcome.point} ({outcome.price})
+                </p>
+              ))}
+
+
             </div>
           );
         })}
