@@ -64,16 +64,12 @@ return (
             <div key={book.key} style={{ marginBottom: "16px" }}>
               <strong>{book.title}</strong>
 
-              <p>Total: {over?.point ?? "N/A"}</p>
-              <p>Spread: {homeSpread?.point ?? "N/A"}</p>
-
-              <p>
-                {game.home_team}: {homeML?.price ?? "N/A"}
-              </p>
-
-              <p>
-                {game.away_team}: {awayML?.price ?? "N/A"}
-              </p>
+              <p><strong>Spreads</strong></p>
+              {spreadOutcomes.map(outcome => (
+                <p key={outcome.name}>
+                  {outcome.name}: {outcome.point} ({outcome.price})
+                </p>
+              ))}
             </div>
           );
         })}
