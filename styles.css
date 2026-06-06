@@ -29,16 +29,33 @@ body {
 }
 
 .game-card {
-  background: #f2f4ff;
+  background: white;
   padding: 10px;
-  border-radius: 8px;
-  margin-top: 15px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
+  border-radius: 20px;
+  margin-top: 24px;
+
+  border: 1px solid #a1a1a1;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,.05);
+}
+
+.game-card h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+
+  font-size: 1.8rem;
 }
 
 .book-card {
-  margin-top: 15px;
+  background: #eaf9ff;
+
+  border-radius: 10px;
+
+  padding: 16px;
+
+  margin-top: 16px;
+
+  border: 1px solid #e2e8f0;
 }
 
 .bookmaker {
