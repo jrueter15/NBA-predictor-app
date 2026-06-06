@@ -32,22 +32,24 @@ return (
   <div>
     <h1>NBA Predictor</h1>
 
-    <h3>How to Read the Odds</h3>
+    <div className="odds-legend">
+      <h3>How to Read the Odds</h3>
 
-    <p>
-      <strong>Spread:</strong> The predicted margin of victory. 
-      Example: +6.5 means the team can lose by 6 and still cover the spread.
-    </p>
+      <p>
+        <strong>Spread:</strong> The predicted margin of victory. 
+        Example: +6.5 means the team can lose by 6 and still cover the spread.
+      </p>
 
-    <p>
-      <strong>Total:</strong> The expected combined score of both teams.
-    </p>
+      <p>
+        <strong>Total:</strong> The expected combined score of both teams.
+      </p>
 
-    <p>
-      <strong>Odds:</strong> The number shows your payout multiplier.
-      Example: 1.83 means a $10 bet returns $18.30 total ($8.30 profit).
-      Higher odds = bigger payout but less likely outcome.
-    </p>
+      <p>
+        <strong>Odds:</strong> The number shows your payout multiplier.
+        Example: 1.83 means a $10 bet returns $18.30 total ($8.30 profit).
+        Higher odds = bigger payout but less likely outcome.
+      </p>
+    </div>
 
     <input type="date" />
     <button onClick={loadGames}>Load Games</button>

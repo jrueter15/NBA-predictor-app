@@ -1,7 +1,31 @@
 body {
   font-family: Arial, sans-serif;
-  background: #f7f7f7;
+  background: #f5f7fa;
+  margin: 0;
   padding: 20px;
+}
+
+#root {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.odds-legend {
+  background: white;
+  padding: 20px;
+  border-radius: 50px;
+  margin-bottom: 24px;
+  border: 2px solid #a1a1a1;
+
+  text-align: left;
+  line-height: 1.8;
+}
+
+.odds-legend h3{
+  margin-top: 0;
+  margin-bottom: 16px;
+  text-align: center;
 }
 
 .game-card {
@@ -19,14 +43,6 @@ body {
 
 .bookmaker {
   margin-top: 6px;
-}
-
-.odds-legend {
-  background: #f4f4f4;
-  padding: 15px;
-  margin-top: 20px;
-  border-radius: 8px;
-  line-height: 1.5;
 }
 
 .insight {
