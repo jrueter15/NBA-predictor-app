@@ -58,6 +58,19 @@ body {
   border: 1px solid #e2e8f0;
 }
 
+.market-header{
+  margin-top: 16px;
+  margin-bottom: 8px;
+
+  font-size: .85rem;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: .08em;
+
+  color: #64748b;  
+}
+
 .bookmaker {
   margin-top: 6px;
 }

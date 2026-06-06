@@ -85,24 +85,21 @@ return (
                 <div key={book.key} style={{ marginBottom: "16px" }}>
                   <strong>{book.title}</strong>
 
-                  <p></p>
-                  <strong>Spreads</strong>
+                  <div className="market-header">Spreads</div>
                   {spreadOutcomes.map(outcome => (
                     <p key={outcome.name}>
                       {outcome.name}: {outcome.point} ({outcome.price})
                     </p>
                   ))}
 
-                  <p></p>
-                  <strong>Totals</strong>
+                  <div className="market-header">Totals</div>
                   {totalOutcomes.map(outcome => (
                     <p key={outcome.name}>
                       {outcome.name}: {outcome.point} ({outcome.price})
                     </p>
                   ))}
 
-                  <p></p>
-                  <strong>ML</strong>
+                  <div className="market-header">Moneyline</div>
                   {moneylineOutcomes.map(outcome => (
                     <p key={outcome.name}>
                       {outcome.name}: {outcome.point} ({outcome.price})
