@@ -8,8 +8,13 @@ body {
   background: #f2f4ff;
   padding: 10px;
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
   border: 1px solid #ccc;
+}
+
+.book-card {
+  margin-top: 15px;
 }
 
 .bookmaker {

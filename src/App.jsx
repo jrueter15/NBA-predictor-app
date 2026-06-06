@@ -53,56 +53,64 @@ return (
     <button onClick={loadGames}>Load Games</button>
 
     {games.map(game => (
-      <div key={game.id}>
-        <h2>
-          {game.away_team} @ {game.home_team}
-        </h2>
+      <div className="game-card">
+        <div key={game.id}>
+          <h2>
+            {game.away_team} @ {game.home_team}
+          </h2>
 
-        {game.bookmakers?.map(book => {
-          const totalsMarket = book.markets?.find(
-            market => market.key === "totals"
-          );
+          {game.bookmakers?.map(book => {
+            const totalsMarket = book.markets?.find(
+              market => market.key === "totals"
+            );
 
-          const spreadsMarket = book.markets?.find(
-            market => market.key === "spreads"
-          );
+            const spreadsMarket = book.markets?.find(
+              market => market.key === "spreads"
+            );
 
-          const h2hMarket = book.markets?.find(
-            market => market.key === "h2h"
-          );
+            const h2hMarket = book.markets?.find(
+              market => market.key === "h2h"
+            );
 
-          const totalOutcomes = totalsMarket?.outcomes ?? [];
+            const totalOutcomes = totalsMarket?.outcomes ?? [];
 
-          const spreadOutcomes = spreadsMarket?.outcomes ?? [];
+            const spreadOutcomes = spreadsMarket?.outcomes ?? [];
 
-          const moneylineOutcomes = h2hMarket?.outcomes ?? [];
+            const moneylineOutcomes = h2hMarket?.outcomes ?? [];
 
-          return (
-            <div key={book.key} style={{ marginBottom: "16px" }}>
-              <strong>{book.title}</strong>
+            return (
+              <div className="book-card">
+                <div key={book.key} style={{ marginBottom: "16px" }}>
+                  <strong>{book.title}</strong>
 
-              {spreadOutcomes.map(outcome => (
-                <p key={outcome.name}>
-                  {outcome.name}: {outcome.point} ({outcome.price})
-                </p>
-              ))}
+                  <p></p>
+                  <strong>Spreads</strong>
+                  {spreadOutcomes.map(outcome => (
+                    <p key={outcome.name}>
+                      {outcome.name}: {outcome.point} ({outcome.price})
+                    </p>
+                  ))}
 
-              {totalOutcomes.map(outcome => (
-                <p key={outcome.name}>
-                  {outcome.name}: {outcome.point} ({outcome.price})
-                </p>
-              ))}
+                  <p></p>
+                  <strong>Totals</strong>
+                  {totalOutcomes.map(outcome => (
+                    <p key={outcome.name}>
+                      {outcome.name}: {outcome.point} ({outcome.price})
+                    </p>
+                  ))}
 
-              {moneylineOutcomes.map(outcome => (
-                <p key={outcome.name}>
-                  {outcome.name}: {outcome.point} ({outcome.price})
-                </p>
-              ))}
-
-
-            </div>
-          );
-        })}
+                  <p></p>
+                  <strong>ML</strong>
+                  {moneylineOutcomes.map(outcome => (
+                    <p key={outcome.name}>
+                      {outcome.name}: {outcome.point} ({outcome.price})
+                    </p>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     ))}
   </div>
