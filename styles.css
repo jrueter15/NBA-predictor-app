@@ -40,6 +40,7 @@ body {
 }
 
 .game-card h2 {
+  text-align: center;
   margin-top: 0;
   margin-bottom: 20px;
 
@@ -56,6 +57,10 @@ body {
   margin-top: 16px;
 
   border: 1px solid #e2e8f0;
+}
+
+.book-card strong{
+  font-size: 1.25rem;
 }
 
 .market-header{
