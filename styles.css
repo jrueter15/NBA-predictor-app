@@ -71,6 +71,25 @@ body {
   color: #64748b;  
 }
 
+.markets-row {
+  display: flex;
+  gap: 24px;
+  margin-top: 12px;
+}
+
+.market-column {
+  flex: 1;
+}
+
+.market-column h4 {
+  margin-top: 0;
+  margin: 10px;
+  color: #666;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
 .bookmaker {
   margin-top: 6px;
 }

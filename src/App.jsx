@@ -85,26 +85,38 @@ return (
                 <div key={book.key} style={{ marginBottom: "16px" }}>
                   <strong>{book.title}</strong>
 
-                  <div className="market-header">Spreads</div>
-                  {spreadOutcomes.map(outcome => (
-                    <p key={outcome.name}>
-                      {outcome.name}: {outcome.point} ({outcome.price})
-                    </p>
-                  ))}
+                  <div className="markets-row">
 
-                  <div className="market-header">Totals</div>
-                  {totalOutcomes.map(outcome => (
-                    <p key={outcome.name}>
-                      {outcome.name}: {outcome.point} ({outcome.price})
-                    </p>
-                  ))}
+                    <div className="market-column">
+                      <h4>Spreads</h4>
 
-                  <div className="market-header">Moneyline</div>
-                  {moneylineOutcomes.map(outcome => (
-                    <p key={outcome.name}>
-                      {outcome.name}: {outcome.point} ({outcome.price})
-                    </p>
-                  ))}
+                      {spreadOutcomes.map(outcome => (
+                        <p key={outcome.name}>
+                          {outcome.name}: {outcome.point} ({outcome.price})
+                        </p>
+                      ))}
+                    </div>
+
+                    <div className="market-column">
+                      <h4>Totals</h4>
+
+                      {totalOutcomes.map(outcome => (
+                        <p key={outcome.name}>
+                          {outcome.name}: {outcome.point} ({outcome.price})
+                        </p>
+                      ))}
+                    </div>
+
+                    <div className="market-column">
+                      <h4>Moneyline</h4>                    
+
+                      {moneylineOutcomes.map(outcome => (
+                        <p key={outcome.name}>
+                          {outcome.name}: {outcome.point} ({outcome.price})
+                        </p>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             );
