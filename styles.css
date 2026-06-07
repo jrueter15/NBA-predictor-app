@@ -15,7 +15,7 @@ body {
   background: white;
   padding: 20px;
   border-radius: 50px;
-  margin-bottom: 24px;
+  margin-bottom: 30px;
   border: 2px solid #a1a1a1;
 
   text-align: left;
@@ -26,6 +26,20 @@ body {
   margin-top: 0;
   margin-bottom: 16px;
   text-align: center;
+}
+
+.controls{
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.date-picker, .load-button {
+  font-size: .8rem;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: white;
 }
 
 .game-card {

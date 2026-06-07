@@ -51,8 +51,13 @@ return (
       </p>
     </div>
 
-    <input type="date" />
-    <button onClick={loadGames}>Load Games</button>
+    <div className="controls">
+      <input type="date" className="date-picker"/>
+
+      <button onClick={loadGames} className="load-button">
+        Load Games
+      </button>
+    </div>
 
     {games.map(game => (
       <div className="game-card">
