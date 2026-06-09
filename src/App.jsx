@@ -4,7 +4,6 @@ export default function App(){
   // component - JS function that return UI (jsx)
   // state, functions, logic
 
-  const [message, setMessage] = useState("Loading...");
   const [games, setGames] = useState([]);
 
   const [selectedDate, setSelectedDate] = useState(() => {
@@ -13,9 +12,14 @@ export default function App(){
     return today.toISOString().split("T")[0]
   });
 
+  const filteredGames = games.filter(game => {
+    const gameDate = game.commence_time.split("T")[0];
+    return gameDate === selectedDate;
+  });
+
   useEffect(() => {
     console.log("App mounted");
-    setMessage("React is working!");
+    loadGames();
   }, []);
 
   async function loadGames(){
@@ -71,73 +75,69 @@ return (
     </div>
 
     {games.map(game => (
-      <div className="game-card">
-        <div key={game.id}>
-          <h2>
-            {game.away_team} @ {game.home_team}
-          </h2>
+      <div key={game.id} className="game-card">
+        <h2>
+          {game.away_team} @ {game.home_team}
+        </h2>
 
-          {game.bookmakers?.map(book => {
-            const totalsMarket = book.markets?.find(
-              market => market.key === "totals"
-            );
+        {game.bookmakers?.map(book => {
+          const totalsMarket = book.markets?.find(
+            market => market.key === "totals"
+          );
 
-            const spreadsMarket = book.markets?.find(
-              market => market.key === "spreads"
-            );
+          const spreadsMarket = book.markets?.find(
+            market => market.key === "spreads"
+          );
 
-            const h2hMarket = book.markets?.find(
-              market => market.key === "h2h"
-            );
+          const h2hMarket = book.markets?.find(
+            market => market.key === "h2h"
+          );
 
-            const totalOutcomes = totalsMarket?.outcomes ?? [];
+          const totalOutcomes = totalsMarket?.outcomes ?? [];
 
-            const spreadOutcomes = spreadsMarket?.outcomes ?? [];
+          const spreadOutcomes = spreadsMarket?.outcomes ?? [];
 
-            const moneylineOutcomes = h2hMarket?.outcomes ?? [];
+          const moneylineOutcomes = h2hMarket?.outcomes ?? [];
 
-            return (
-              <div className="book-card">
-                <div key={book.key} style={{ marginBottom: "16px" }}>
-                  <strong>{book.title}</strong>
+          return (
+            <div key={book.key} className="book-card" style={{ marginBottom: "16px" }}>
+              <strong>{book.title}</strong>
 
-                  <div className="markets-row">
+              <div className="markets-row">
 
-                    <div className="market-column">
-                      <h4>Spreads</h4>
+                <div className="market-column">
+                  <h4>Spreads</h4>
 
-                      {spreadOutcomes.map(outcome => (
-                        <p key={outcome.name}>
-                          {outcome.name}: {outcome.point} ({outcome.price})
-                        </p>
-                      ))}
-                    </div>
+                  {spreadOutcomes.map(outcome => (
+                    <p key={outcome.name}>
+                      {outcome.name}: {outcome.point} ({outcome.price})
+                    </p>
+                  ))}
+                </div>
 
-                    <div className="market-column">
-                      <h4>Totals</h4>
+                <div className="market-column">
+                  <h4>Totals</h4>
 
-                      {totalOutcomes.map(outcome => (
-                        <p key={outcome.name}>
-                          {outcome.name}: {outcome.point} ({outcome.price})
-                        </p>
-                      ))}
-                    </div>
+                  {totalOutcomes.map(outcome => (
+                    <p key={outcome.name}>
+                      {outcome.name}: {outcome.point} ({outcome.price})
+                    </p>
+                  ))}
+                </div>
 
-                    <div className="market-column">
-                      <h4>Moneyline</h4>                    
+                <div className="market-column">
+                  <h4>Moneyline</h4>                    
 
-                      {moneylineOutcomes.map(outcome => (
-                        <p key={outcome.name}>
-                          {outcome.name}: {outcome.point} ({outcome.price})
-                        </p>
-                      ))}
-                    </div>
-                  </div>
+                  {moneylineOutcomes.map(outcome => (
+                    <p key={outcome.name}>
+                      {outcome.name}: {outcome.price}
+                    </p>
+                  ))}
                 </div>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
     ))}
   </div>
