@@ -99,40 +99,6 @@ return (
     ) : (
       filteredGames.map(game => {
         
-        const overLines = game.bookmakers?.map(book => {
-          const totalsMarket = getMarket(book, "totals");
-
-          const over = totalsMarket?.outcomes?.find(
-            outcome => outcome.name === "Over"
-          );
-
-          if (!over) return null;
-        
-          return{
-            book: book.title,
-            total: over.point,
-            price: over.price
-          };
-        })
-        .filter(Boolean);
-
-      const highestTotal = 
-        overLines.length > 0
-          ? overLines.reduce((highest), current) =>
-            current.total > highest.total
-              ? current
-              : highest
-            )
-          : null;
-
-      const lowestTotal = 
-        overLines.length > 0
-          ? overLines.reduce((lowest), current) =>
-            current.total < lowest.total
-              ? current
-              : lowest
-            )
-          : null;
 
       return(
 
@@ -140,6 +106,35 @@ return (
           <h2>
             {game.away_team} @ {game.home_team}
           </h2>
+
+        {(() => {
+          const { highest, lowest } =
+            getHighestLowestTotal(game);
+
+          if (!highest || !lowest) {
+            return null;
+          }
+
+          return (
+            <div className="insight">
+              <p>
+                Highest Total:
+                {" "}
+                {highest.total}
+                {" "}
+                ({highest.book})
+              </p>
+
+              <p>
+                Lowest Total:
+                {" "}
+                {lowest.total}
+                {" "}
+                ({lowest.book})
+              </p>
+            </div>
+          );
+        })()}
 
           {game.bookmakers?.map(book => {
             const totalsMarket = getMarket(book, "totals");
@@ -193,17 +188,59 @@ return (
 
           })}
         </div>
-      }))
-    }
+      );
+    })
+    )}
   </div>
 );
-}
 
 // Helper function for getting a market
 function getMarket(book, key) {
   return book.markets.find(
     market => market.key === key
   );
+}
+
+function getHighestLowestTotal(game){
+  const overLines = game.bookmakers
+    ?.map(book => {
+      const totalsMarket = getMarket(book, "totals");
+
+      const over = totalsMarket?.outcomes?.find(
+        outcome => outcome.name === "Over"
+      );
+
+      if (!over) return null;
+        
+      return{
+        book: book.title,
+        total: over.point,
+        price: over.price
+      };
+    })
+    .filter(Boolean);
+
+    if (!overLines || overLines.length === 0){
+      return {
+        highest: null,
+        lowest: null
+      };
+    }
+
+    return {
+      highest: overLines.reduce((highest, current) =>
+        current.total > highest.total
+          ? current
+          : highest
+      ),
+
+      lowest: overLines.reduce((lowest, current) =>
+        current.total < lowest.total
+          ? current
+          : lowest
+      )
+    };
+}
 }
 
 // Helper fetchOdds function
