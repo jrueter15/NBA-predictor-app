@@ -97,24 +97,54 @@ return (
         No games found for this date.
       </div>
     ) : (
-      filteredGames.map(game => (
+      filteredGames.map(game => {
+        
+        const overLines = game.bookmakers?.map(book => {
+          const totalsMarket = getMarket(book, "totals");
+
+          const over = totalsMarket?.outcomes?.find(
+            outcome => outcome.name === "Over"
+          );
+
+          if (!over) return null;
+        
+          return{
+            book: book.title,
+            total: over.point,
+            price: over.price
+          };
+        })
+        .filter(Boolean);
+
+      const highestTotal = 
+        overLines.length > 0
+          ? overLines.reduce((highest), current) =>
+            current.total > highest.total
+              ? current
+              : highest
+            )
+          : null;
+
+      const lowestTotal = 
+        overLines.length > 0
+          ? overLines.reduce((lowest), current) =>
+            current.total < lowest.total
+              ? current
+              : lowest
+            )
+          : null;
+
+      return(
+
         <div key={game.id} className="game-card">
           <h2>
             {game.away_team} @ {game.home_team}
           </h2>
 
           {game.bookmakers?.map(book => {
-            const totalsMarket = book.markets?.find(
-              market => market.key === "totals"
-            );
-
-            const spreadsMarket = book.markets?.find(
-              market => market.key === "spreads"
-            );
-
-            const h2hMarket = book.markets?.find(
-              market => market.key === "h2h"
-            );
+            const totalsMarket = getMarket(book, "totals");
+            const spreadsMarket = getMarket(book, "spread");
+            const h2hMarket = getMarket(book, "h2h");
 
             const totalOutcomes = totalsMarket?.outcomes ?? [];
             const spreadOutcomes = spreadsMarket?.outcomes ?? [];
@@ -163,10 +193,17 @@ return (
 
           })}
         </div>
-      )))
+      }))
     }
   </div>
 );
+}
+
+// Helper function for getting a market
+function getMarket(book, key) {
+  return book.markets.find(
+    market => market.key === key
+  );
 }
 
 // Helper fetchOdds function
@@ -192,12 +229,8 @@ async function fetchOdds(){
 {/*
 
 function App(){
-  alert("App started");
 
   const[games, setGames] = useState([]);
-
-  console.log("App started");
-
   const [games, setGames] = useState([]);
 
   useEffect(() => {
@@ -334,29 +367,7 @@ const insight = generateTotalInsight(fakeGame);
 
 console.log(insight);
 
-// Fetch odds
-async function fetchOdds() {
-  const response = await fetch(
-    "https://api.the-odds-api.com/v4/sports/basketball_nba/odds?regions=us&markets=spreads,totals,h2h&apiKey=43df2322173d88a1be8f6588fd399c7a"
-  );
 
-  console.log("Odds status:", response.status);
-
-  const text = await response.text();
-  console.log("Raw odds response:", text);
-
-  if (!response.ok) {
-    throw new Error(`Odds fetch failed: ${response.status}`);
-  }
-
-  return JSON.parse(text);
-}
-
-function getMarket(bookmaker, key) {
-  return bookmaker.markets.find(
-    market => market.key === key
-  );
-}
 
 // Extract spread
 function getMarketData(oddsGame) {
@@ -403,18 +414,6 @@ function getMarketData(oddsGame) {
       homeML: homeML?.price,
       awayML: awayML?.price
     }
-  })
-}
-
-// Helper for data filtering
-function filterGamesByDate(games, selectedDate){
-  return games.filter(game => {
-    const gameDate = new Date(game.commence_time);
-    
-    const localDate = new Date(gameDate.getTime() - gameDate.getTimezoneOffset() * 60000
-  ).toISOString().split("T")[0];
-    
-  return localDate === selectedDate;
   })
 }
 
