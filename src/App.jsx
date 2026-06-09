@@ -118,19 +118,11 @@ return (
           return (
             <div className="insight">
               <p>
-                Highest Total:
-                {" "}
-                {highest.total}
-                {" "}
-                ({highest.book})
+                Highest Total: {highest.total} ({highest.book}) - Odds {highest.price}
               </p>
 
               <p>
-                Lowest Total:
-                {" "}
-                {lowest.total}
-                {" "}
-                ({lowest.book})
+                Lowest Total: {lowest.total} ({lowest.book}) - Odds {lowest.price}
               </p>
             </div>
           );
