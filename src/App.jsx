@@ -7,6 +7,12 @@ export default function App(){
   const [message, setMessage] = useState("Loading...");
   const [games, setGames] = useState([]);
 
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    return today.toISOString().split("T")[0]
+  });
+
   useEffect(() => {
     console.log("App mounted");
     setMessage("React is working!");
@@ -52,7 +58,12 @@ return (
     </div>
 
     <div className="controls">
-      <input type="date" className="date-picker"/>
+      <input 
+        type="date"
+        value={selectedDate}
+        onChange={(e) => setSelectedDate(e.target.value)}
+        className="date-picker"
+      />
 
       <button onClick={loadGames} className="load-button">
         Load Games
