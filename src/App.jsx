@@ -92,72 +92,79 @@ return (
       </button>
     </div>
 
-    {filteredGames.map(game => (
-      <div key={game.id} className="game-card">
-        <h2>
-          {game.away_team} @ {game.home_team}
-        </h2>
-
-        {game.bookmakers?.map(book => {
-          const totalsMarket = book.markets?.find(
-            market => market.key === "totals"
-          );
-
-          const spreadsMarket = book.markets?.find(
-            market => market.key === "spreads"
-          );
-
-          const h2hMarket = book.markets?.find(
-            market => market.key === "h2h"
-          );
-
-          const totalOutcomes = totalsMarket?.outcomes ?? [];
-
-          const spreadOutcomes = spreadsMarket?.outcomes ?? [];
-
-          const moneylineOutcomes = h2hMarket?.outcomes ?? [];
-
-          return (
-            <div key={book.key} className="book-card" style={{ marginBottom: "16px" }}>
-              <strong>{book.title}</strong>
-
-              <div className="markets-row">
-
-                <div className="market-column">
-                  <h4>Spreads</h4>
-
-                  {spreadOutcomes.map(outcome => (
-                    <p key={outcome.name}>
-                      {outcome.name}: {outcome.point} ({outcome.price})
-                    </p>
-                  ))}
-                </div>
-
-                <div className="market-column">
-                  <h4>Totals</h4>
-
-                  {totalOutcomes.map(outcome => (
-                    <p key={outcome.name}>
-                      {outcome.name}: {outcome.point} ({outcome.price})
-                    </p>
-                  ))}
-                </div>
-
-                <div className="market-column">
-                  <h4>Moneyline</h4>                    
-
-                  {moneylineOutcomes.map(outcome => (
-                    <p key={outcome.name}>
-                      {outcome.name}: {outcome.price}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            </div>
-          );
-        })}
+    {filteredGames.length === 0 ? (
+      <div className="empty-state">
+        No games found for this date.
       </div>
-    ))}
+    ) : (
+      filteredGames.map(game => (
+        <div key={game.id} className="game-card">
+          <h2>
+            {game.away_team} @ {game.home_team}
+          </h2>
+
+          {game.bookmakers?.map(book => {
+            const totalsMarket = book.markets?.find(
+              market => market.key === "totals"
+            );
+
+            const spreadsMarket = book.markets?.find(
+              market => market.key === "spreads"
+            );
+
+            const h2hMarket = book.markets?.find(
+              market => market.key === "h2h"
+            );
+
+            const totalOutcomes = totalsMarket?.outcomes ?? [];
+            const spreadOutcomes = spreadsMarket?.outcomes ?? [];
+            const moneylineOutcomes = h2hMarket?.outcomes ?? [];
+
+            return (
+              <div key={book.key} className="book-card" style={{ marginBottom: "16px" }}>
+                <strong>{book.title}</strong>
+
+                <div className="markets-row">
+
+                  <div className="market-column">
+                    <h4>Spreads</h4>
+
+                    {spreadOutcomes.map(outcome => (
+                      <p key={outcome.name}>
+                        {outcome.name}: {outcome.point} ({outcome.price})
+                      </p>
+                    ))}
+                  </div>
+
+                  <div className="market-column">
+                    <h4>Totals</h4>
+
+                    {totalOutcomes.map(outcome => (
+                      <p key={outcome.name}>
+                        {outcome.name}: {outcome.point} ({outcome.price})
+                      </p>
+                    ))}
+                  </div>
+
+                  <div className="market-column">
+                    <h4>Moneyline</h4>                    
+
+                    {moneylineOutcomes.map(outcome => (
+                      <p key={outcome.name}>
+                        {outcome.name}: {outcome.price}
+                      </p>
+                    ))}
+                  </div>
+
+                </div>
+
+              </div>
+            );
+
+          })}
+        </div>
+      )))
+    }
   </div>
 );
 }
