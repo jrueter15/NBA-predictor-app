@@ -304,11 +304,77 @@ function getHighestLowestTotal(game){
 }
 
 function getHighestLowestMoneyline(game){
+  const moneyLines = game.bookmakers
+    ?.flatMap(book => {
+      const mlMarket = getMarket(book, "h2h");
 
+      return(
+        mlMarket?.outcomes?.map(outcome => ({
+          book: book.title,
+          team: outcome.name,
+          price: outcome.price
+        })) ?? []
+      );
+    });
+
+    if (!moneyLines || moneyLines.length === 0){
+      return {
+        highest: null,
+        lowest: null
+      };
+    }
+
+    return {
+      highest: moneyLines.reduce((highest, current) =>
+        current.price > highest.price
+          ? current
+          : highest
+      ),
+
+      lowest: moneyLines.reduce((lowest, current) =>
+        current.price < lowest.price
+          ? current
+          : lowest
+      )
+    };
 }
 
-function getHighestLowestSpread(game){
 
+function getHighestLowestSpread(game){
+  const spreadLines = game.bookmakers
+    ?.flatmap(book => {
+      const spreadMarket = getMarket(book, "spreads");
+
+      return (
+        spreadMarket?.outcomes?.map(outcome => ({
+          book: book.title,
+          team: outcome.name,
+          point: outcome.point,
+          price: outcome.price
+        })) ?? []
+      );
+    });
+
+    if (!spreadLines || spreadLines.length === 0){
+      return {
+        highest: null,
+        lowest: null
+      };
+    }
+
+    return {
+      highest: spreadLines.reduce((highest, current) =>
+        current.point > highest.point
+          ? current
+          : highest
+      ),
+
+      lowest: spreadLines.reduce((lowest, current) =>
+        current.point < lowest.point
+          ? current
+          : lowest
+      )
+    };
 }
 
 // Helper fetchOdds function
