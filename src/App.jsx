@@ -118,11 +118,79 @@ return (
           return (
             <div className="insight">
               <p>
-                Highest Total: {highest.total} ({highest.book}) - Odds {highest.price}
+                Highest Total: {highest.total}
+                {" "}
+                ({highest.book})
+                @ Odds {highest.price}
               </p>
 
               <p>
-                Lowest Total: {lowest.total} ({lowest.book}) - Odds {lowest.price}
+                Lowest Total: {lowest.total}
+                {" "}
+                ({lowest.book})
+                @ Odds {lowest.price}
+              </p>
+            </div>
+          );
+        })()}
+
+        {(() => {
+          const { highest, lowest } =
+            getHighestLowestMoneyline(game);
+
+          if (!highest || !lowest) {
+            return null;
+          }
+
+          return (
+            <div className="insight">
+              <p>
+                Highest ML: {highest.team}
+                {" "}
+                {highest.price}
+                {" "}
+                ({highest.book})
+              </p>
+
+              <p>
+                Lowest ML: {lowest.team}
+                {" "}
+                {lowest.price}
+                {" "}
+                ({lowest.book})
+              </p>
+            </div>
+          );
+        })()}
+
+        {(() => {
+          const { highest, lowest } =
+            getHighestLowestSpread(game);
+
+          if (!highest || !lowest) {
+            return null;
+          }
+
+          return (
+            <div className="insight">
+              <p>
+                Biggest Spread:
+                {" "}
+                {highest.team}
+                {" "}
+                {highest.point}
+                {" "}
+                ({highest.book})
+              </p>
+
+              <p>
+                Smallest Spread:
+                {" "}
+                {lowest.team}
+                {" "}
+                {lowest.point}
+                {" "}
+                ({lowest.book})
               </p>
             </div>
           );
@@ -233,6 +301,14 @@ function getHighestLowestTotal(game){
       )
     };
 }
+}
+
+function getHighestLowestMoneyline(game){
+
+}
+
+function getHighestLowestSpread(game){
+
 }
 
 // Helper fetchOdds function
