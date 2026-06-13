@@ -98,7 +98,6 @@ return (
       </div>
     ) : (
       filteredGames.map(game => {
-        
 
       return(
 
@@ -106,6 +105,39 @@ return (
           <h2>
             {game.away_team} @ {game.home_team}
           </h2>
+
+        {(() => {
+          const { highest, lowest } =
+            getHighestLowestSpread(game);
+
+          if (!highest || !lowest) {
+            return null;
+          }
+
+          return (
+            <div className="insight">
+              <p>
+                Biggest Spread:
+                {" "}
+                {highest.team}
+                {" "}
+                {highest.point}
+                {" "}
+                ({highest.book})
+              </p>
+
+              <p>
+                Smallest Spread:
+                {" "}
+                {lowest.team}
+                {" "}
+                {lowest.point}
+                {" "}
+                ({lowest.book})
+              </p>
+            </div>
+          );
+        })()}
 
         {(() => {
           const { highest, lowest } =
@@ -163,42 +195,9 @@ return (
           );
         })()}
 
-        {(() => {
-          const { highest, lowest } =
-            getHighestLowestSpread(game);
-
-          if (!highest || !lowest) {
-            return null;
-          }
-
-          return (
-            <div className="insight">
-              <p>
-                Biggest Spread:
-                {" "}
-                {highest.team}
-                {" "}
-                {highest.point}
-                {" "}
-                ({highest.book})
-              </p>
-
-              <p>
-                Smallest Spread:
-                {" "}
-                {lowest.team}
-                {" "}
-                {lowest.point}
-                {" "}
-                ({lowest.book})
-              </p>
-            </div>
-          );
-        })()}
-
           {game.bookmakers?.map(book => {
             const totalsMarket = getMarket(book, "totals");
-            const spreadsMarket = getMarket(book, "spread");
+            const spreadsMarket = getMarket(book, "spreads");
             const h2hMarket = getMarket(book, "h2h");
 
             const totalOutcomes = totalsMarket?.outcomes ?? [];
@@ -253,12 +252,50 @@ return (
     )}
   </div>
 );
+}
 
 // Helper function for getting a market
 function getMarket(book, key) {
-  return book.markets.find(
+  return book.markets?.find(
     market => market.key === key
   );
+}
+
+function getHighestLowestSpread(game){
+  const spreadLines = game.bookmakers
+    ?.flatMap(book => {
+      const spreadMarket = getMarket(book, "spreads");
+
+      return (
+        spreadMarket?.outcomes?.map(outcome => ({
+          book: book.title,
+          team: outcome.name,
+          point: outcome.point,
+          price: outcome.price
+        })) ?? []
+      );
+    });
+
+    if (!spreadLines || spreadLines.length === 0){
+      return {
+        highest: null,
+        lowest: null
+      };
+    }
+
+    return {
+      highest: spreadLines.reduce((highest, current) =>
+        current.point > highest.point
+          ? current
+          : highest
+      ),
+
+      lowest: spreadLines.reduce((lowest, current) =>
+        current.point < lowest.point
+          ? current
+          : lowest
+      )
+    };
 }
 
 function getHighestLowestTotal(game){
@@ -338,44 +375,6 @@ function getHighestLowestMoneyline(game){
     };
 }
 
-
-function getHighestLowestSpread(game){
-  const spreadLines = game.bookmakers
-    ?.flatmap(book => {
-      const spreadMarket = getMarket(book, "spreads");
-
-      return (
-        spreadMarket?.outcomes?.map(outcome => ({
-          book: book.title,
-          team: outcome.name,
-          point: outcome.point,
-          price: outcome.price
-        })) ?? []
-      );
-    });
-
-    if (!spreadLines || spreadLines.length === 0){
-      return {
-        highest: null,
-        lowest: null
-      };
-    }
-
-    return {
-      highest: spreadLines.reduce((highest, current) =>
-        current.point > highest.point
-          ? current
-          : highest
-      ),
-
-      lowest: spreadLines.reduce((lowest, current) =>
-        current.point < lowest.point
-          ? current
-          : lowest
-      )
-    };
-}
-
 // Helper fetchOdds function
 async function fetchOdds(){
   const response = await fetch(
@@ -388,7 +387,6 @@ async function fetchOdds(){
 
   return response.json();
 }
-
 
 //import "./App.css";
 //import {generateTotalInsight} from "./logic/insights.js";
