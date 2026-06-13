@@ -301,7 +301,6 @@ function getHighestLowestTotal(game){
       )
     };
 }
-}
 
 function getHighestLowestMoneyline(game){
   const moneyLines = game.bookmakers
@@ -396,135 +395,7 @@ async function fetchOdds(){
 //import {getTeamGames} from "./api/statsApi.js";
 //import {calculateAveragePoints} from "./logic/averages.js";
 
-
 {/*
-
-function App(){
-
-  const[games, setGames] = useState([]);
-  const [games, setGames] = useState([]);
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  async function loadData(){
-    console.log("Load button clicked");
-    try{
-      const oddsData = await fetchOdds();
-
-      console.log("Odds loaded:", oddsData);
-
-      setGames(oddsData);
-
-    }catch(err){
-      console.error("Failed to load odds: ", err);
-    }
-  }
-
-  return(
-    <div className="app">
-
-      <h1>NBA Predictor</h1>
-
-      {games.length === 0 ? (
-
-        <p>Loading games...</p>
-
-      ) : (
-
-
-          return (
-
-            <div key={game.id} className="game-card">
-
-              <h2>
-                {game.away_team} @ {game.home_team}
-              </h2>
-
-              <p>
-                <strong>Total:</strong>{" "}
-                {over?.point ?? "N/A"}
-              </p>
-
-              <p>
-                <strong>Spread:</strong>{" "}
-                {homeSpread?.point ?? "N/A"}
-              </p>
-
-              <p>
-                <strong>Moneyline:</strong>
-              </p>
-
-              <p>
-                {game.home_team}:{" "}
-                {homeML?.price ?? "N/A"}
-              </p>
-
-              <p>
-                {game.away_team}:{" "}
-                {awayML?.price ?? "N/A"}
-              </p>
-
-              <hr />
-
-            </div>
-          );
-        })
-      )}
-    </div>
-  );
-}
-
-export default App;
-
-// Fetch odds
-async function fetchOdds() {
-  console.log("Fetching odds...");
-  console.log("Response:", response.status);
-
-  const response = await fetch(
-    `https://api.the-odds-api.com/v4/sports/basketball_nba/odds?regions=us&markets=spreads,totals,h2h&apiKey=${import.meta.env.VITE_ODDS_API_KEY}`
-  );
-
-  if (!response.ok) {
-    throw new Error(
-      `Odds fetch failed: ${response.status}`
-    );
-  }
-
-  return response.json();
-}
-
-
-        })
-      )}
-
-      {games.map(game => {
-
-
-
-
-
-        const over = totalsMarket?.outcomes?.find(
-          outcome => outcome.name === "Over"
-        );
-
-        return(
-          
-          
-          Sportsbook Total: {over?.point ?? "N/A"}
-        )
-
-        <div key={game.id}>
-          {game.away_team} @ {game.home_team}
-        </div>
-      ))}
-      
-    </div>
-  );
-}
-}
 
 export default App;
 
